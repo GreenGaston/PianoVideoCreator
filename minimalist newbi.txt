@@ -1,0 +1,14 @@
+Track: track
+Instrument: instrument
+Note: 72 80 0 0
+Note: 72 80 1459 1578
+Note: 74 80 1579 1698
+Note: 76 80 1699 1818
+Note: 77 80 1819 0
+Track: track
+Instrument: instrument
+Note: 69 80 0 0
+Note: 69 80 1435 1554
+Note: 71 80 1555 1674
+Note: 72 80 1675 1794
+Note: 74 80 1795 0

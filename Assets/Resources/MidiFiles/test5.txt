@@ -1,0 +1,8 @@
+Track: track
+Instrument: instrument
+Note: 72 80 0 141 in seconds: 0 0,2203125 duration: 0,2203125
+Note: 71 80 142 212 in seconds: 0,221875 0,33125 duration: 0,109375
+Note: 69 80 213 311 in seconds: 0,3328125 0,4859375 duration: 0,153125
+Note: 67 80 312 424 in seconds: 0,4875 0,6625 duration: 0,175
+Note: 65 80 425 544 in seconds: 0,6640625 0,85 duration: 0,1859375
+Note: 64 80 545 664 in seconds: 0,8515625 1,0375 duration: 0,1859375

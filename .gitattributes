@@ -1,0 +1,5 @@
+PianoVideoCreator/Assets/StreamingAssets/FFmpeg/bin/ffprobe.exe filter=lfs diff=lfs merge=lfs -text
+PianoVideoCreator/Assets/StreamingAssets/FFmpeg/bin/ffplay.exe filter=lfs diff=lfs merge=lfs -text
+Assets/StreamingAssets/FFmpeg/bin/ffprobe.exe filter=lfs diff=lfs merge=lfs -text
+Assets/StreamingAssets/FFmpeg/bin/ffmpeg.exe filter=lfs diff=lfs merge=lfs -text
+Assets/StreamingAssets/FFmpeg/bin/ffplay.exe filter=lfs diff=lfs merge=lfs -text

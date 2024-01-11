@@ -70,6 +70,12 @@ Develop a system to allow for different note appearances.
 ### Changing Individual Notes
 Future feature to manually change note colors.
 
+### Changing Piano
+Piano looks pretty poor, and i would like to add a structure to choose between pre-build presets as well as making it easier to make presets
+
+### Particles?
+similar products have particals come from the piano, i dont have much experience with the unity particle system and i think these are very distracting but i'll consider adding it
+
 ## Contact
 
 For those interested in contributing, please reach out to tommypower300.swag@gmail.com. (Note: It's an old email, okay -_-)

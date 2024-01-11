@@ -17,13 +17,36 @@ public class ImageVideoEditor : MonoBehaviour
 
     //image on which the video or image is displayed
     public SpriteRenderer image;
+    public SpriteRenderer image2;
 
     public VideoPlayer videoPlayer;
     //texture the video is displayed on
     public Texture2D videoTexture;
+    public GameObject videoObject;
+
+    private Bounds bounds;
+    private Bounds bounds2;
 
     //slider
     public Slider slider;
+
+    public string imagePath;
+
+    public TMP_Dropdown dropdown;
+
+    public Vector3 startPositionImage;
+    public Vector3 startPositionImage2;
+
+    public void Start(){
+        //set the video object to be inactive
+        videoObject.SetActive(false);
+        //get the bounds of the image
+        bounds=image.bounds;
+        bounds2=image2.bounds;
+        startPositionImage=image.transform.position;
+        startPositionImage2=image2.transform.position;
+
+    }
 
     public void ImageButton(){
         //open file browser
@@ -48,41 +71,10 @@ public class ImageVideoEditor : MonoBehaviour
         loaded=true;
         isVideo=false;
         //set the image
-        StartCoroutine(SetImage(path));
-
+        imagePath=path;
+        DropDownValueChanged(dropdown.value);
     }
 
-
-    public IEnumerator SetImage(string path){
-        //set the image
-        if(System.IO.File.Exists(path)){
-            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + path);
-            yield return www.SendWebRequest();
-            if(www.result != UnityWebRequest.Result.Success) {
-                Debug.Log(www.error);
-            }
-            else {
-                Texture2D tex = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
-                
-                // Save the original size
-                Vector2 originalSize = image.size;
-
-                // Apply the sprite to the SpriteRenderer
-                image.sprite = sprite;
-                Debug.Log("original size:"+originalSize);
-                Debug.Log("sprite size:"+sprite.rect.size);
-
-                // scale the image object scale to be equal to scale*(originalSize/spriteSize)
-                image.transform.localScale=new Vector3(image.transform.localScale.x*(originalSize.x/sprite.rect.size.x),image.transform.localScale.y*(originalSize.y/sprite.rect.size.y),image.transform.localScale.z);
-                //set alpha to slider value
-                SetImageAlpha(slider.value);
-            }
-        }
-        else{
-            Debug.Log("file does not exist");
-        }
-    }
 
 
     public void SetImageAlpha(float alpha){
@@ -131,4 +123,171 @@ public class ImageVideoEditor : MonoBehaviour
         // }
     }
 
+
+  
+
+    public void DropDownValueChanged(int value){
+        //if the image is not loaded yet, do nothing
+        if(!loaded){
+            return;
+        }
+        //if the value is 0, set the image to be the first image
+        if(value==0){
+            StartCoroutine(Squeeze());
+        }
+        //if the value is 1, set the image to be the second image
+        else if(value==1){
+            StartCoroutine(SqueezeExact());
+        }
+        //if the value is 2, set the image to be the third image
+        else if(value==2){
+            StartCoroutine(Squeeze2());
+        }
+        //if the value is 3, set the image to be the fourth image
+        else if(value==3){
+            StartCoroutine(SqueezeExact2());
+        }
+    }
+    
+    public IEnumerator SqueezeExact(){
+
+        if(System.IO.File.Exists(imagePath)){
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + imagePath);
+            yield return www.SendWebRequest();
+            if(www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Texture2D tex = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                
+                image.sprite = sprite;
+                
+
+                //calculate a new scale based on the bounds extends of the image
+                float xScale=bounds.extents.x/sprite.bounds.extents.x;
+                float yScale=bounds.extents.y/sprite.bounds.extents.y;
+                //set the scale
+                image.transform.localScale=new Vector3(xScale,yScale,1);
+
+                // scale the image object scale to be equal to scale*(originalSize/spriteSize)
+                //image.transform.localScale=new Vector3(image.transform.localScale.x*(originalSize.x/sprite.rect.size.x),image.transform.localScale.y*(originalSize.y/sprite.rect.size.y),image.transform.localScale.z);
+                //set alpha to slider value
+                SetImageAlpha(slider.value);
+                //set the position
+                image.transform.position=startPositionImage;
+            }
+        }
+        else{
+            Debug.Log("file does not exist");
+        }
+
+    }
+
+    public IEnumerator Squeeze(){
+        if(System.IO.File.Exists(imagePath)){
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + imagePath);
+            yield return www.SendWebRequest();
+            if(www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Texture2D tex = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                
+                image.sprite = sprite;
+                
+
+                //calculate a new scale based on the bounds extends of the image
+                float xScale = bounds.extents.x / sprite.bounds.extents.x;
+                float yScale = bounds.extents.y / sprite.bounds.extents.y;
+
+                // Use the smaller scale to maintain the aspect ratio
+                float scale = Mathf.Min(xScale, yScale);
+                image.transform.localScale=new Vector3(scale,scale,1);
+
+                // scale the image object scale to be equal to scale*(originalSize/spriteSize)
+                //image.transform.localScale=new Vector3(image.transform.localScale.x*(originalSize.x/sprite.rect.size.x),image.transform.localScale.y*(originalSize.y/sprite.rect.size.y),image.transform.localScale.z);
+                //set alpha to slider value
+                SetImageAlpha(slider.value);
+                //set the position
+                image.transform.position=startPositionImage;
+            }
+        }
+        else{
+            Debug.Log("file does not exist");
+        }
+
+    }
+
+    public IEnumerator Squeeze2(){
+        if(System.IO.File.Exists(imagePath)){
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + imagePath);
+            yield return www.SendWebRequest();
+            if(www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Texture2D tex = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                
+                image.sprite = sprite;
+                
+
+                //calculate a new scale based on the bounds extends of the image
+                float xScale = bounds2.extents.x / sprite.bounds.extents.x;
+                float yScale = bounds2.extents.y / sprite.bounds.extents.y;
+
+                // Use the smaller scale to maintain the aspect ratio
+                float scale = Mathf.Min(xScale, yScale);
+                image.transform.localScale=new Vector3(scale,scale,1);
+
+                // scale the image object scale to be equal to scale*(originalSize/spriteSize)
+                //image.transform.localScale=new Vector3(image.transform.localScale.x*(originalSize.x/sprite.rect.size.x),image.transform.localScale.y*(originalSize.y/sprite.rect.size.y),image.transform.localScale.z);
+                //set alpha to slider value
+                SetImageAlpha(slider.value);
+                //set the position
+                image.transform.position=startPositionImage2;
+            }
+        }
+        else{
+            Debug.Log("file does not exist");
+        }
+
+    }
+
+    public IEnumerator SqueezeExact2(){
+
+        if(System.IO.File.Exists(imagePath)){
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture("file:///" + imagePath);
+            yield return www.SendWebRequest();
+            if(www.result != UnityWebRequest.Result.Success) {
+                Debug.Log(www.error);
+            }
+            else {
+                Texture2D tex = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                Sprite sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+                
+                image.sprite = sprite;
+                
+
+                //calculate a new scale based on the bounds extends of the image
+                float xScale=bounds2.extents.x/sprite.bounds.extents.x;
+                float yScale=bounds2.extents.y/sprite.bounds.extents.y;
+                //set the scale
+                image.transform.localScale=new Vector3(xScale,yScale,1);
+
+                // scale the image object scale to be equal to scale*(originalSize/spriteSize)
+                //image.transform.localScale=new Vector3(image.transform.localScale.x*(originalSize.x/sprite.rect.size.x),image.transform.localScale.y*(originalSize.y/sprite.rect.size.y),image.transform.localScale.z);
+                //set alpha to slider value
+                SetImageAlpha(slider.value);
+                //set the position
+                image.transform.position=startPositionImage2;
+            }
+        }
+        else{
+            Debug.Log("file does not exist");
+        }
+
+    }
 }
